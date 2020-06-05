@@ -1,0 +1,2 @@
+This file was created in node.js
+ Now this is kicking!
