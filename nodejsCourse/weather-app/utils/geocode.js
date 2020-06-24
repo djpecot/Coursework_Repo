@@ -5,19 +5,19 @@ const mb_apikey = 'pk.eyJ1IjoiZGpwZWNvdCIsImEiOiJja2JyaHQzMmcwN2RyMnBxeHRoaXhnOT
 
 const geocode = (address, callback) => {
 
-    const mb_url  = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?access_token=' + mb_apikey + '&limit=1'
-    request({url:mb_url, json: true }, (error, response) => {
+    const url  = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(address) + '.json?access_token=' + mb_apikey + '&limit=1'
+    request({url, json: true }, (error, {body}) => {
         if (error){
             callback('Unable to connect to weather service')
             
-        } else if (response.body.features === 0) {
+        } else if (!body.features) {
             callback('Unable to find location, check what you are searching')
 
         } else {
             callback(undefined, {
-                lat : response.body.features[0].center[1],
-                long : response.body.features[0].center[0],
-                name : response.body.features[0].place_name
+                lat : body.features[0].center[1],
+                long : body.features[0].center[0],
+                name : body.features[0].place_name
             })
         }
     })

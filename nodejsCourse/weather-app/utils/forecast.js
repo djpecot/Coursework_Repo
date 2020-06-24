@@ -1,17 +1,20 @@
 const request = require('request')
 
 const forecast = (lat, long, callback) => {
-    const ws_url = 'http://api.weatherstack.com/current?access_key=dd96cb9106ccf0559bfd9da3f3aa93bf&query=' + lat + ',' + long
+    const url = 'http://api.weatherstack.com/current?access_key=dd96cb9106ccf0559bfd9da3f3aa93bf&query=' + lat + ',' + long
 
-    request({url:ws_url, json: true }, (error, response) => {
+    request({url, json: true }, (error, {body}) => {
         if (error){
             callback('Unable to connect to weather service')
-        } else if (!response.body.location.utc_offset) {
+        } else if (body.features.length === 0) {
             callback('Unable to find location, check what you are searching')
         } else {
-            callback(undefined, 'Temp = ' + response.body.current.temperature)
-                // temp : response.body.current.temperature,
-                // feelslike : response.body.current.feelslike
+            callback(undefined, {
+                temp: body.current.temperature,
+                feelslike: body.current.feelslike
+            })
+            // callback(undefined, 'Temp = ' + response.body.current.temperature)
+                
         }
     })
 }
