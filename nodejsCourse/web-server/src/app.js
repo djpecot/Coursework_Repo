@@ -42,10 +42,30 @@ app.get('/help', (req, res) =>{
 
 // weather page
 app.get('/weather', (req, res) => {
+
+    if (!req.query.search) {
+        return res.send({
+            error: "Please provide search time"
+        })
+    }
+
     res.send({
-        title: 'Weather app',
-        location: 'London',
-        temperature: 40
+        address: req.query.search,
+    })
+})
+
+// Endpoint to accept address
+app.get('/products', (req, res) => {
+
+    if (!req.query.search) {
+        return res.send({
+            error: "Please provide search time"
+        })
+
+    }
+    console.log(req.query.search)
+    res.send({
+        products: []
     })
 })
 
