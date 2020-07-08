@@ -1,3 +1,4 @@
+
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
@@ -5,6 +6,8 @@ const hbs = require('hbs')
 
 const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
+const forecast = require(path.join(__dirname, '/utils/forecast.js'))
+const geocode = require(path.join(__dirname, '/utils/geocode.js'))
 
 const app = express()
 
@@ -45,13 +48,33 @@ app.get('/weather', (req, res) => {
 
     if (!req.query.search) {
         return res.send({
-            error: "Please provide search time"
+            error: "Please provide search address"
         })
     }
 
-    res.send({
-        address: req.query.search,
+    geocode(req.query.search, (error, {lat, long, name} = {}) => {
+        if (error) {
+            return res.send({
+                error: "Unexpected Error"
+            })
+        } else {
+            forecast(lat, long, (error, {temp, feelslike} = {}) => {
+                if (error){
+                    return res.send({
+                        error: " Unexpected error"
+                    })
+                } else {
+                    res.send({
+                        forecast: 'Temperature is ' + temp + ' but feels like ' + feelslike,
+                        location: name,
+                        address: req.query.search,
+                    })
+                }
+            })
+        }
     })
+
+    
 })
 
 // Endpoint to accept address

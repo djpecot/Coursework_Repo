@@ -16,14 +16,14 @@ register(
 #%%
 env = gym.make('FrozenLakeNotSlippery-v0')
 
-number_states = 
-num_actions = 
-
+number_states = env.observation_space.n
+num_actions = env.action_space.n
+gamma = 1
 
 num_episodes = 100
 steps_total = []
 
-
+Q = torch.zeros(number_states,num_actions)
 
 #%% Run some episodes
 for i in range(num_episodes):
@@ -33,8 +33,17 @@ for i in range(num_episodes):
     while True:
         step += 1
         time.sleep(0.5)
+        # Random action
         action = env.action_space.sample()
+
+        # More intelligent?
+        action = torch.max(Q[state],1)[1][0]
+
+
         new_state, reward, done, info = env.step(action)
+
+Q[state,action] = reward + gamma * torch.max(Q[new_state])
+
         # Comment below to speed up simulations
         env.render()
         print(new_state)

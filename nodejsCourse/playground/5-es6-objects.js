@@ -24,5 +24,7 @@ const product = {
 // const label = product.label
 // console.log(label)
 
-const {label:productLabel, stock} = product
-console.log(productLabel)
+const transaction = (type, {label='no label avail', stock='stock unknown'} = {}) =>{
+    console.log(type, label, stock)
+} 
+transaction('order', product)
