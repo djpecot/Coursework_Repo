@@ -3,6 +3,7 @@ const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
 
+const port = process.env.PORT || 3000
 
 const viewsPath = path.join(__dirname, '../templates/views')
 const partialsPath = path.join(__dirname, '../templates/partials')
@@ -58,14 +59,14 @@ app.get('/weather', (req, res) => {
                 error: "Unexpected Error"
             })
         } else {
-            forecast(lat, long, (error, {temp, feelslike} = {}) => {
+            forecast(lat, long, (error, {temp, feelslike, hmdty} = {}) => {
                 if (error){
                     return res.send({
                         error: " Unexpected error"
                     })
                 } else {
                     res.send({
-                        forecast: 'Temperature is ' + temp + ' but feels like ' + feelslike,
+                        forecast: 'Temperature is ' + temp + ' but feels like ' + feelslike + " because the humidity is " + hmdty + "%",
                         location: name,
                         address: req.query.search,
                     })
@@ -110,6 +111,8 @@ app.get('*', (req, res) => {
     })
 })
 
-app.listen(3000, () =>{
+// Change to be the dyanmic port for heroku
+
+app.listen(port, () =>{
     console.log('Server is up and running!')
 })
